@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeWithMe | Built by Swapnil Karhale</title>
+    <link rel="stylesheet" href="/public/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-row">
+          <img src="/public/images/logo.svg" alt="CodeWithMe logo" class="brand-logo" />
+          <div>
+            <h1>CodeWithMe</h1>
+            <p>Built by Swapnil Karhale</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="toggleTheme" class="ghost-btn">Dark mode</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero-panel glass-card">
+          <!-- LEFT HERO SIDEBAR -->
+          <div class="hero-copy">
+            <span class="eyebrow">Free AI learning for students</span>
+            <h2>Learn code smarter with AI-powered study rooms.</h2>
+            <p>
+              Ask programming questions, get instant Gemini-powered answers, and study together with friends in a shared room.
+            </p>
+            <div class="hero-actions">
+              <button id="createRoomBtn" class="primary-btn">Create Room</button>
+              <button id="openJoinFormBtn" class="secondary-btn">Join Room</button>
+            </div>
+
+            <!-- EMBEDDED ROOM CODE SECTION (MOVED TO LEFT SIDE) -->
+            <div class="quick-panel-embedded" id="roomPanel" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+              <div class="panel-row">
+                <div>
+                  <h3 style="margin-bottom: 4px; font-size: 1rem;">Room code</h3>
+                  <p id="roomCodeDisplay" style="margin: 0; font-size: 0.9rem;">No room created yet. Click Create Room.</p>
+                </div>
+                <button id="copyRoomCodeBtn" class="secondary-btn" disabled>Copy code</button>
+              </div>
+              <div class="panel-row join-row hidden" id="joinFormWrapper" style="margin-top: 12px;">
+                <input id="joinRoomInput" type="text" maxlength="6" placeholder="Enter room code" />
+                <button id="joinRoomBtn" class="primary-btn">Join</button>
+              </div>
+              <p class="small-note" style="margin-top: 10px; font-size: 0.8rem;">
+                Room codes are temporary, private, and work instantly without signup.
+              </p>
+            </div>
+          </div>
+
+          <!-- RIGHT ASK AI CARD (UNCHANGED) -->
+          <div class="hero-card">
+            <h3>Ask the AI anything</h3>
+            <textarea id="homePrompt" placeholder="What do you want to learn today?" rows="5"></textarea>
+            <div class="hero-card-actions">
+              <button id="askAiBtn" class="primary-btn">Ask AI</button>
+              <button id="clearAiBtn" class="ghost-btn">Clear</button>
+            </div>
+            <div id="homeResponse" class="answer-box"></div>
+          </div>
+        </section>
+
+        <!-- FEATURES GRID -->
+        <section class="features-grid">
+          <article class="feature-card glass-card">
+            <h4>Gemini AI Help</h4>
+            <p>Ask code questions, debug, explain algorithms, and generate formatted snippets.</p>
+          </article>
+          <article class="feature-card glass-card">
+            <h4>Instant Rooms</h4>
+            <p>Create a room in seconds, share the code, and study together live.</p>
+          </article>
+          <article class="feature-card glass-card">
+            <h4>Live Group Chat</h4>
+            <p>Real-time peer chat with shared AI responses visible to everyone.</p>
+          </article>
+          <article class="feature-card glass-card">
+            <h4>Beginner Friendly</h4>
+            <p>Modern UI, simple flow, fast load times, and dark mode support.</p>
+          </article>
+        </section>
+      </main>
+
+      <footer class="footer-bar glass-card">
+        <p>© 2026 CodeWithMe</p>
+        <p>Built by Swapnil Karhale</p>
+      </footer>
+    </div>
+
+    <!-- Highlight.js CSS for Dark Theme Code Syntax Highlighting -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+    />
+
+    <!-- Marked.js Library to parse Markdown responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Highlight.js Library for Syntax Highlighting in code blocks -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <!-- Main JavaScript -->
+    <script src="/public/js/main.js"></script>
+  </body>
+</html>

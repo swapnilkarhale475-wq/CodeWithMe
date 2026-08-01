@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Room | CodeWithMe</title>
+    <link rel="stylesheet" href="/public/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+  </head>
+  <body>
+    <div class="page-shell room-shell">
+      <header class="topbar">
+        <div class="brand-row">
+          <img src="/public/images/logo.svg" alt="CodeWithMe logo" class="brand-logo" />
+          <div>
+            <h1>Study Room</h1>
+            <p>Built by Swapnil Karhale</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="toggleTheme" class="ghost-btn">Dark mode</button>
+          <a href="/" class="secondary-btn">Home</a>
+        </div>
+      </header>
+
+      <main class="room-grid">
+        <!-- LEFT SIDEBAR PANEL -->
+        <section class="room-panel glass-card">
+          <div class="room-header">
+            <div>
+              <h2>🔑 Room Code</h2>
+              <p id="roomCodeText">—</p>
+            </div>
+            <button id="copyRoomCodeBtn" class="secondary-btn">Copy code</button>
+          </div>
+
+          <div class="status-row">
+            <div>
+              <span style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                <span style="height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block;"></span> 
+                Active Members
+              </span>
+              <span id="memberCount" style="display: block; margin-top: 4px;">0 online</span>
+            </div>
+            <div id="memberList" style="margin-top: 8px;">Members will appear here</div>
+          </div>
+
+          <!-- ASK AI CARD -->
+          <div class="section-block">
+            <h3>🤖 Ask AI for the room</h3>
+            <textarea
+              id="roomPrompt"
+              placeholder="Ask AI about DSA, SQL, Java, Python, Web Development, C++, JavaScript..."
+              rows="4"
+            ></textarea>
+            <div class="action-row" style="margin-top: 10px;">
+              <button id="askRoomAiBtn" class="primary-btn">Ask AI</button>
+              <button id="clearRoomAiBtn" class="ghost-btn">Clear</button>
+            </div>
+          </div>
+
+          <!-- SHARED AI ANSWERS CARD -->
+          <div class="section-block">
+            <h3>⚡ Shared AI answers</h3>
+            <div id="roomAiResponse" class="answer-box">
+              <div class="empty-state" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">
+                <span style="font-size: 1.5rem; display: block; margin-bottom: 6px;">💡</span>
+                <p style="margin: 0;">No AI responses yet.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- LEAVE ROOM BUTTON -->
+          <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border, rgba(148, 163, 184, 0.2));">
+            <a href="/" class="ghost-btn" style="display: block; text-align: center; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+              🚪 Leave Room
+            </a>
+          </div>
+        </section>
+
+        <!-- RIGHT CHAT PANEL -->
+        <section class="chat-panel glass-card">
+          <div class="chat-header">
+            <div>
+              <h2>💬 Group chat</h2>
+              <p>Real-time collaborative discussions. Messages appear for everyone immediately.</p>
+            </div>
+          </div>
+
+          <!-- CHAT MESSAGES AREA -->
+          <div id="chatMessages" class="chat-messages">
+            <div class="empty-state" style="text-align: center; color: var(--text-muted); margin: auto; padding: 40px 20px;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 8px;">💬</span>
+              <p style="margin: 0; font-weight: 500;">No messages yet.</p>
+              <p style="margin: 4px 0 0; font-size: 0.88rem;">Start the discussion with your study group.</p>
+            </div>
+          </div>
+
+          <!-- CHAT INPUT FORM -->
+          <form id="chatForm" class="chat-form">
+            <input
+              id="usernameInput"
+              type="text"
+              maxlength="20"
+              placeholder="Enter your display name..."
+            />
+            <div class="chat-input-row">
+              <input
+                id="chatInput"
+                type="text"
+                placeholder="Type your coding question..."
+                autocomplete="off"
+              />
+              <button type="submit" class="primary-btn">Send 🚀</button>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <footer class="footer-bar glass-card">
+        <p>© 2026 CodeWithMe</p>
+        <p>Built by Swapnil Karhale</p>
+      </footer>
+    </div>
+
+    <!-- SCRIPT INCLUSIONS -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/public/js/room.js"></script>
+  </body>
+</html>
