@@ -42,6 +42,12 @@ app.get("/room", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "room.html"));
 });
 
+// ADDED START
+app.get("/robots.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "robots.txt"));
+});
+// ADDED END
+
 app.get("*", (req, res) => {
   res.redirect("/");
 });
