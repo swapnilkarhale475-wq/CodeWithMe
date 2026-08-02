@@ -48,6 +48,12 @@ app.get("/robots.txt", (req, res) => {
 });
 // ADDED END
 
+// ADD HERE
+app.get("/sitemap.xml", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "sitemap.xml"));
+});
+// END ADD
+
 app.get("*", (req, res) => {
   res.redirect("/");
 });
