@@ -42,17 +42,20 @@ app.get("/room", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "room.html"));
 });
 
-// ADDED START
+// UPDATED START: Serve robots.txt with explicit Content-Type and X-Robots-Tag
 app.get("/robots.txt", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+  res.setHeader("X-Robots-Tag", "all");
   res.sendFile(path.join(__dirname, "public", "robots.txt"));
 });
-// ADDED END
+// UPDATED END
 
-// ADD HERE
+// UPDATED START: Serve sitemap.xml with explicit Content-Type
 app.get("/sitemap.xml", (req, res) => {
+  res.setHeader("Content-Type", "application/xml");
   res.sendFile(path.join(__dirname, "public", "sitemap.xml"));
 });
-// END ADD
+// UPDATED END
 
 app.get("*", (req, res) => {
   res.redirect("/");
