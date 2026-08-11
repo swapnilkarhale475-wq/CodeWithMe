@@ -10,7 +10,10 @@ const cors = require("cors");
 const apiRoutes = require("./routes/api");
 const { askGemini } = require("./controllers/aiController");
 
-console.log("API Loaded:", process.env.GEMINI_API_KEY ? "YES" : "NO");
+console.log(
+  "API Loaded:",
+  process.env.GEMINI_API_KEY ? "YES" : "NO"
+);
 
 const app = express();
 const server = http.createServer(app);
@@ -34,38 +37,103 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files via /public prefix
-app.use("/public", express.static(path.resolve(__dirname, "public")));
+app.use(
+  "/public",
+  express.static(path.resolve(__dirname, "public"))
+);
 
 app.use("/api", apiRoutes(rooms));
 
+// Home page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
+  res.sendFile(
+    path.join(__dirname, "views", "index.html")
+  );
 });
 
+// Room page
 app.get("/room", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "room.html"));
+  res.sendFile(
+    path.join(__dirname, "views", "room.html")
+  );
+});
+
+// Public information pages
+app.get("/privacy.html", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "views", "privacy.html")
+  );
+});
+
+app.get("/terms.html", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "views", "terms.html")
+  );
+});
+
+app.get("/about.html", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "views", "about.html")
+  );
+});
+
+app.get("/contact.html", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "views", "contact.html")
+  );
 });
 
 // Serve robots.txt with optimal Search Engine Headers
 app.get("/robots.txt", (req, res) => {
-  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.setHeader(
+    "Content-Type",
+    "text/plain; charset=utf-8"
+  );
+
   res.setHeader("X-Robots-Tag", "all");
-  res.setHeader("Cache-Control", "public, max-age=86400");
-  res.status(200).sendFile(path.resolve(__dirname, "public", "robots.txt"));
+
+  res.setHeader(
+    "Cache-Control",
+    "public, max-age=86400"
+  );
+
+  res.status(200).sendFile(
+    path.resolve(__dirname, "public", "robots.txt")
+  );
 });
 
 // Serve sitemap.xml with optimal Search Engine Headers
 app.get("/sitemap.xml", (req, res) => {
-  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.setHeader(
+    "Content-Type",
+    "application/xml; charset=utf-8"
+  );
+
   res.setHeader("X-Robots-Tag", "all");
-  res.setHeader("Cache-Control", "public, max-age=86400");
-  res.status(200).sendFile(path.resolve(__dirname, "public", "sitemap.xml"));
+
+  res.setHeader(
+    "Cache-Control",
+    "public, max-age=86400"
+  );
+
+  res.status(200).sendFile(
+    path.resolve(__dirname, "public", "sitemap.xml")
+  );
 });
 
 // Google Search Console Verification File Route
-app.get("/google1c4bac604a7ea31a.html", (req, res) => {
-  res.status(200).sendFile(path.resolve(__dirname, "public", "google1c4bac604a7ea31a.html"));
-});
+app.get(
+  "/google1c4bac604a7ea31a.html",
+  (req, res) => {
+    res.status(200).sendFile(
+      path.resolve(
+        __dirname,
+        "public",
+        "google1c4bac604a7ea31a.html"
+      )
+    );
+  }
+);
 
 // Production 404 Route for Unmatched Requests
 app.use((req, res) => {
@@ -74,94 +142,118 @@ app.use((req, res) => {
 
 io.on("connection", (socket) => {
 
-  socket.on("join-room", ({ roomCode, username }) => {
+  socket.on(
+    "join-room",
+    ({ roomCode, username }) => {
 
-    const room = rooms[roomCode];
+      const room = rooms[roomCode];
 
-    if (!room) {
-      socket.emit("room-error", "Room not found.");
-      return;
+      if (!room) {
+        socket.emit(
+          "room-error",
+          "Room not found."
+        );
+        return;
+      }
+
+      socket.join(roomCode);
+
+      socket.roomCode = roomCode;
+      socket.username = username || "Student";
+
+      room.participants.add(socket.id);
+      room.usernames[socket.id] = socket.username;
+
+      io.to(roomCode).emit("room-members", {
+        count: room.participants.size,
+        members: Object.values(room.usernames),
+      });
+
+      socket.emit(
+        "room-history",
+        room.messages
+      );
     }
+  );
 
-    socket.join(roomCode);
+  socket.on(
+    "room-message",
+    ({ roomCode, username, content }) => {
 
-    socket.roomCode = roomCode;
-    socket.username = username || "Student";
+      const room = rooms[roomCode];
 
-    room.participants.add(socket.id);
-    room.usernames[socket.id] = socket.username;
+      if (!room) return;
 
-    io.to(roomCode).emit("room-members", {
-      count: room.participants.size,
-      members: Object.values(room.usernames),
-    });
-
-    socket.emit("room-history", room.messages);
-  });
-
-  socket.on("room-message", ({ roomCode, username, content }) => {
-
-    const room = rooms[roomCode];
-
-    if (!room) return;
-
-    const message = {
-      id: Date.now(),
-      sender: username,
-      text: content,
-      timestamp: new Date().toISOString(),
-      type: "chat",
-    };
-
-    room.messages.push(message);
-
-    io.to(roomCode).emit("new-message", message);
-
-  });
-
-  socket.on("ask-ai", async ({ roomCode, prompt, username }) => {
-
-    const room = rooms[roomCode];
-
-    if (!room) return;
-
-    try {
-
-      const userMessage = {
+      const message = {
         id: Date.now(),
         sender: username,
-        text: prompt,
+        text: content,
         timestamp: new Date().toISOString(),
-        type: "question",
+        type: "chat",
       };
 
-      room.messages.push(userMessage);
+      room.messages.push(message);
 
-      io.to(roomCode).emit("new-message", userMessage);
-
-      const answer = await askGemini(prompt);
-
-      const aiMessage = {
-        id: Date.now() + 1,
-        sender: "CodeWithMe AI",
-        text: answer,
-        timestamp: new Date().toISOString(),
-        type: "ai",
-      };
-
-      room.messages.push(aiMessage);
-
-      io.to(roomCode).emit("ai-response", aiMessage);
-
-    } catch (err) {
-
-      console.error(err);
-
-      socket.emit("ai-error", err.message);
-
+      io.to(roomCode).emit(
+        "new-message",
+        message
+      );
     }
+  );
 
-  });
+  socket.on(
+    "ask-ai",
+    async ({ roomCode, prompt, username }) => {
+
+      const room = rooms[roomCode];
+
+      if (!room) return;
+
+      try {
+
+        const userMessage = {
+          id: Date.now(),
+          sender: username,
+          text: prompt,
+          timestamp: new Date().toISOString(),
+          type: "question",
+        };
+
+        room.messages.push(userMessage);
+
+        io.to(roomCode).emit(
+          "new-message",
+          userMessage
+        );
+
+        const answer = await askGemini(prompt);
+
+        const aiMessage = {
+          id: Date.now() + 1,
+          sender: "CodeWithMe AI",
+          text: answer,
+          timestamp: new Date().toISOString(),
+          type: "ai",
+        };
+
+        room.messages.push(aiMessage);
+
+        io.to(roomCode).emit(
+          "ai-response",
+          aiMessage
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        socket.emit(
+          "ai-error",
+          err.message
+        );
+      }
+    }
+  );
 
   socket.on("disconnect", () => {
 
@@ -182,18 +274,23 @@ io.on("connection", (socket) => {
       delete rooms[roomCode];
 
       return;
-
     }
 
-    io.to(roomCode).emit("room-members", {
-      count: room.participants.size,
-      members: Object.values(room.usernames),
-    });
-
+    io.to(roomCode).emit(
+      "room-members",
+      {
+        count: room.participants.size,
+        members: Object.values(
+          room.usernames
+        ),
+      }
+    );
   });
 
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 CodeWithMe running at http://localhost:${PORT}`);
+  console.log(
+    `🚀 CodeWithMe running at http://localhost:${PORT}`
+  );
 });
